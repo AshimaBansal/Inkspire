@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop — Inkspire</title>
+    <meta name="description" content="Browse curated gallery posters and 3D prints on Inkspire. Filter by category, price, and material.">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/products.css">
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="logo">Inkspire.</a>
+        <nav class="nav-links">
+            <a href="products.html">Shop Posters</a>
+            <a href="products.html?category=3d-print">3D Prints</a>
+            <a href="upload.html">Upload Custom</a>
+        </nav>
+        <div class="nav-actions">
+            <button id="theme-toggle" class="btn" style="padding: 0.5rem;" aria-label="Toggle Dark Mode">
+                <i class="ph ph-moon"></i>
+            </button>
+            <a href="cart.html" class="cart-icon-wrapper">
+                <i class="ph ph-shopping-cart" style="font-size: 1.5rem;"></i>
+                <span class="cart-badge" id="cart-badge-count">0</span>
+            </a>
+        </div>
+    </header>
+
+
+    <div class="filter-overlay" id="filter-overlay"></div>
+
+    <div class="products-layout">
+
+        <!-- Left Sidebar Filter -->
+        <aside class="filter-sidebar" id="filter-sidebar">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: var(--space-md);">
+                <h3>Filters</h3>
+                <button class="clear-filters-btn" id="clear-filters" style="margin-top:0; width:auto; padding:0.4rem 0.8rem;">Clear All</button>
+            </div>
+
+            <!-- Category -->
+            <div class="filter-group">
+                <h4>Category</h4>
+                <label>
+                    <input type="radio" name="category" value="all" checked> All Products
+                </label>
+                <label>
+                    <input type="radio" name="category" value="poster"> Posters
+                </label>
+                <label>
+                    <input type="radio" name="category" value="3d-print"> 3D Prints
+                </label>
+            </div>
+
+            <!-- Price Range -->
+            <div class="filter-group">
+                <h4>Price Range</h4>
+                <div class="price-range-display">
+                    <span>₹499</span>
+                    <span id="price-display">₹4999</span>
+                </div>
+                <input type="range" id="price-slider" min="499" max="4999" value="4999" step="100">
+            </div>
+
+            <!-- Material -->
+            <div class="filter-group">
+                <h4>Material</h4>
+                <label>
+                    <input type="checkbox" name="material" value="Matte"> Matte
+                </label>
+                <label>
+                    <input type="checkbox" name="material" value="Glossy"> Glossy
+                </label>
+                <label>
+                    <input type="checkbox" name="material" value="Canvas"> Canvas
+                </label>
+                <label>
+                    <input type="checkbox" name="material" value="PLA"> PLA
+                </label>
+                <label>
+                    <input type="checkbox" name="material" value="Resin"> Resin
+                </label>
+            </div>
+        </aside>
+
+        <!-- Products Main Area -->
+        <main class="products-main">
+            <!-- Top Bar -->
+            <div class="products-topbar">
+                <button class="mobile-filter-toggle" id="mobile-filter-toggle">
+                    <i class="ph ph-sliders"></i> Filters
+                </button>
+                <div class="search-wrapper">
+                    <i class="ph ph-magnifying-glass"></i>
+                    <input type="text" id="search-input" placeholder="Search artworks…" autocomplete="off">
+                </div>
+                <select id="sort-select">
+                    <option value="default">Sort: Featured</option>
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                    <option value="newest">Newest</option>
+                </select>
+                <span class="results-count" id="results-count"></span>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="product-grid" id="product-grid">
+                <!-- Skeleton cards on load -->
+                <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div><div class="skeleton skeleton-btn"></div></div>
+                <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div><div class="skeleton skeleton-btn"></div></div>
+                <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div><div class="skeleton skeleton-btn"></div></div>
+                <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div><div class="skeleton skeleton-btn"></div></div>
+                <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div><div class="skeleton skeleton-btn"></div></div>
+                <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div><div class="skeleton skeleton-btn"></div></div>
+                <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div><div class="skeleton skeleton-btn"></div></div>
+                <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div><div class="skeleton skeleton-btn"></div></div>
+                <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div><div class="skeleton skeleton-btn"></div></div>
+                <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div><div class="skeleton skeleton-btn"></div></div>
+                <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div><div class="skeleton skeleton-btn"></div></div>
+                <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div><div class="skeleton skeleton-btn"></div></div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination"></div>
+        </main>
+
+    </div>
+
+    <footer>
+        <div class="logo">Inkspire. &copy; 2026</div>
+        <div class="footer-links">
+            <a href="#">Instagram</a> | <a href="#">Twitter</a>
+        </div>
+    </footer>
+
+    <script src="js/theme.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/hofs.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/products.js"></script>
+</body>
+</html>

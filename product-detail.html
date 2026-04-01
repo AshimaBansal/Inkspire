@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Detail — Inkspire</title>
+    <meta name="description" content="Choose size, material and add this artwork to your cart.">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/products.css">
+    <style>
+        .detail-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-xxl);
+            padding: var(--space-xl) 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Image side */
+        .detail-image-wrapper {
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+        }
+
+        .detail-image-frame {
+            overflow: hidden;
+            aspect-ratio: 3/4;
+            background-color: var(--bg-secondary);
+            cursor: zoom-in;
+            position: relative;
+        }
+
+        .detail-image-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center center;
+        }
+
+        .detail-image-frame:hover img {
+            transform: scale(1.08);
+        }
+
+        .detail-image-frame .image-tag {
+            position: absolute;
+            bottom: var(--space-sm);
+            left: var(--space-sm);
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            backdrop-filter: blur(6px);
+        }
+
+        /* Info side */
+        .detail-info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-lg);
+        }
+
+        .detail-breadcrumb {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .detail-breadcrumb a {
+            color: var(--text-secondary);
+            transition: color var(--transition-smooth);
+        }
+
+        .detail-breadcrumb a:hover {
+            color: var(--accent-gold);
+        }
+
+        .detail-category {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .detail-title {
+            font-size: 2rem;
+            line-height: 1.25;
+        }
+
+        .detail-photographer {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .detail-price {
+            font-family: var(--font-heading);
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .detail-price .price-note {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-weight: 400;
+            margin-left: 0.5rem;
+        }
+
+        .selector-label {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-xs);
+            display: block;
+        }
+
+        .size-options {
+            display: flex;
+            gap: var(--space-xs);
+            flex-wrap: wrap;
+        }
+
+        .size-btn {
+            padding: 0.5rem 1.1rem;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            font-family: var(--font-body);
+            font-size: 0.88rem;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: all var(--transition-smooth);
+        }
+
+        .size-btn:hover,
+        .size-btn.active {
+            border-color: var(--text-primary);
+            background-color: var(--text-primary);
+            color: var(--bg-primary);
+        }
+
+        .material-options {
+            display: flex;
+            gap: var(--space-xs);
+            flex-wrap: wrap;
+        }
+
+        .material-btn {
+            padding: 0.5rem 1.1rem;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            font-family: var(--font-body);
+            font-size: 0.88rem;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: all var(--transition-smooth);
+        }
+
+        .material-btn:hover,
+        .material-btn.active {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
+        .qty-row {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .qty-selector {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .qty-selector button {
+            width: 40px;
+            height: 44px;
+            background: transparent;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: background var(--transition-fast);
+        }
+
+        .qty-selector button:hover {
+            background: var(--border-color);
+        }
+
+        .qty-selector span {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            border-left: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+        }
+
+        .add-detail-btn {
+            flex: 1;
+            background-color: var(--text-primary);
+            color: var(--bg-primary);
+            border: none;
+            padding: 1rem 2rem;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            letter-spacing: 0.5px;
+        }
+
+        .add-detail-btn:hover {
+            background-color: var(--accent-gold);
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .detail-divider {
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .detail-info-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-sm);
+        }
+
+        .detail-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .detail-info-item .label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-secondary);
+        }
+
+        .detail-info-item .value {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Related Products */
+        .related-section {
+            padding: var(--space-xxl) 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .related-section h2 {
+            font-size: 1.75rem;
+            margin-bottom: var(--space-xl);
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-md);
+        }
+
+        @media (max-width: 1100px) {
+            .related-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .detail-layout {
+                grid-template-columns: 1fr;
+                padding: var(--space-md) 5%;
+                gap: var(--space-xl);
+            }
+
+            .detail-image-wrapper { position: static; }
+            .detail-title { font-size: 1.5rem; }
+            .detail-price { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="logo">Inkspire.</a>
+        <nav class="nav-links">
+            <a href="products.html">Shop Posters</a>
+            <a href="products.html?category=3d-print">3D Prints</a>
+            <a href="upload.html">Upload Custom</a>
+        </nav>
+        <div class="nav-actions">
+            <button id="theme-toggle" class="btn" style="padding: 0.5rem;" aria-label="Toggle Dark Mode">
+                <i class="ph ph-moon"></i>
+            </button>
+            <a href="cart.html" class="cart-icon-wrapper">
+                <i class="ph ph-shopping-cart" style="font-size: 1.5rem;"></i>
+                <span class="cart-badge" id="cart-badge-count">0</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="detail-layout" id="detail-layout">
+        <!-- JS renders the content here -->
+        <div style="grid-column:1/-1; text-align:center; padding:var(--space-xxl) 0;">
+            <div class="skeleton" style="width:400px;height:500px;max-width:100%;margin:0 auto;"></div>
+        </div>
+    </div>
+
+    <section class="related-section">
+        <h2>Related Works</h2>
+        <div class="related-grid" id="related-grid">
+            <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="logo">Inkspire. &copy; 2026</div>
+        <div class="footer-links">
+            <a href="#">Instagram</a> | <a href="#">Twitter</a>
+        </div>
+    </footer>
+
+    <script src="js/theme.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/hofs.js"></script>
+    <script src="js/api.js"></script>
+
+    <script>
+        // SIZE MULTIPLIERS for live price calculator
+        const SIZE_MULTIPLIERS = { 'A4': 1, 'A3': 1.4, 'A2': 1.9, '50x70': 2.3 };
+        const POSTER_MATERIALS = ['Matte', 'Glossy', 'Canvas'];
+        const PRINT_MATERIALS = ['PLA', 'Resin', 'ABS'];
+
+        let currentProduct = null;
+        let selectedSize = 'A4';
+        let selectedMaterial = 'Matte';
+        let quantity = 1;
+
+        function getProductFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                id: params.get('id'),
+                title: decodeURIComponent(params.get('title') || 'Untitled Artwork'),
+                image: decodeURIComponent(params.get('image') || ''),
+                price: parseInt(params.get('price') || '999'),
+                category: params.get('category') || 'poster',
+                photographer: decodeURIComponent(params.get('photographer') || 'Unknown Artist')
+            };
+        }
+
+        function calculatePrice() {
+            if (!currentProduct) return 0;
+            return Math.round(currentProduct.price * (SIZE_MULTIPLIERS[selectedSize] || 1));
+        }
+
+        function updatePriceDisplay() {
+            const el = document.getElementById('live-price');
+            if (el) el.textContent = `₹${calculatePrice().toLocaleString('en-IN')}`;
+        }
+
+        function setSize(size) {
+            selectedSize = size;
+            document.querySelectorAll('.size-btn').forEach(b => b.classList.toggle('active', b.dataset.size === size));
+            updatePriceDisplay();
+        }
+
+        function setMaterial(mat) {
+            selectedMaterial = mat;
+            document.querySelectorAll('.material-btn').forEach(b => b.classList.toggle('active', b.dataset.mat === mat));
+        }
+
+        function changeQty(delta) {
+            quantity = Math.max(1, quantity + delta);
+            const el = document.getElementById('qty-val');
+            if (el) el.textContent = quantity;
+        }
+
+        function renderProductDetail(product) {
+            const materials = product.category === 'poster' ? POSTER_MATERIALS : PRINT_MATERIALS;
+            selectedMaterial = materials[0];
+
+            const layout = document.getElementById('detail-layout');
+            layout.innerHTML = `
+                <div class="detail-image-wrapper">
+                    <div class="detail-image-frame">
+                        <img src="${product.image}" alt="${product.title}" loading="lazy">
+                        <span class="image-tag">${product.category === 'poster' ? 'Art Print' : '3D Print'}</span>
+                    </div>
+                </div>
+                <div class="detail-info">
+                    <div>
+                        <div class="detail-breadcrumb">
+                            <a href="products.html">Shop</a>
+                            <i class="ph ph-caret-right" style="font-size:0.8rem;"></i>
+                            <span>${product.category === 'poster' ? 'Posters' : '3D Prints'}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-category">${product.category === 'poster' ? 'Art Print' : '3D Print'}</div>
+                        <h1 class="detail-title">${product.title.charAt(0).toUpperCase() + product.title.slice(1)}</h1>
+                        <p class="detail-photographer">by ${product.photographer}</p>
+                    </div>
+                    <div class="detail-price">
+                        <span id="live-price">₹${product.price.toLocaleString('en-IN')}</span>
+                        <span class="price-note">incl. taxes</span>
+                    </div>
+                    <div class="detail-divider"></div>
+
+                    <div>
+                        <span class="selector-label">Size</span>
+                        <div class="size-options">
+                            ${Object.keys(SIZE_MULTIPLIERS).map(s => `
+                                <button class="size-btn ${s === 'A4' ? 'active' : ''}" data-size="${s}" onclick="setSize('${s}')">${s}</button>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div>
+                        <span class="selector-label">Material</span>
+                        <div class="material-options">
+                            ${materials.map((m, i) => `
+                                <button class="material-btn ${i === 0 ? 'active' : ''}" data-mat="${m}" onclick="setMaterial('${m}')">${m}</button>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="qty-row">
+                        <div>
+                            <span class="selector-label">Quantity</span>
+                            <div class="qty-selector">
+                                <button onclick="changeQty(-1)" aria-label="Decrease">−</button>
+                                <span id="qty-val">1</span>
+                                <button onclick="changeQty(1)" aria-label="Increase">+</button>
+                            </div>
+                        </div>
+                        <button class="add-detail-btn" onclick="handleAddToCart()">
+                            <i class="ph ph-shopping-cart"></i> Add to Cart
+                        </button>
+                    </div>
+
+                    <div class="detail-divider"></div>
+
+                    <div class="detail-info-list">
+                        <div class="detail-info-item">
+                            <span class="label">Ships In</span>
+                            <span class="value">3–5 Business Days</span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="label">Free Shipping</span>
+                            <span class="value">Orders above ₹999</span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="label">Print Quality</span>
+                            <span class="value">Giclée / FDM</span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="label">Returns</span>
+                            <span class="value">7-Day Easy Return</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleAddToCart() {
+            if (!currentProduct) return;
+            addToCart({
+                id: currentProduct.id + '-' + selectedSize + '-' + selectedMaterial,
+                title: currentProduct.title,
+                image: currentProduct.image,
+                price: calculatePrice(),
+                size: selectedSize,
+                material: selectedMaterial,
+                category: currentProduct.category,
+                photographer: currentProduct.photographer,
+                quantity: quantity
+            });
+        }
+
+        async function loadRelated(category) {
+            try {
+                const raw = await fetchProducts(1, category === 'poster' ? 'art' : 'sculpture');
+                const products = transformProducts(raw).slice(0, 4);
+                const grid = document.getElementById('related-grid');
+                grid.innerHTML = products.map(p => `
+                    <a href="product-detail.html?id=${p.id}&title=${encodeURIComponent(p.title)}&image=${encodeURIComponent(p.image)}&price=${p.price}&category=${p.category}&photographer=${encodeURIComponent(p.photographer)}" class="product-card">
+                        <div class="product-card-image">
+                            <img src="${p.image}" alt="${p.title}" loading="lazy">
+                        </div>
+                        <div class="product-card-info">
+                            <div class="product-category-tag">${p.category}</div>
+                            <h3>${p.title ? p.title.charAt(0).toUpperCase() + p.title.slice(1) : 'Artwork'}</h3>
+                            <div class="product-price">₹${p.price.toLocaleString('en-IN')}</div>
+                        </div>
+                    </a>
+                `).join('');
+            } catch (e) {
+                document.getElementById('related-grid').innerHTML = '<p style="color:var(--text-secondary)">Could not load related products.</p>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            currentProduct = getProductFromURL();
+            if (currentProduct.id) {
+                renderProductDetail(currentProduct);
+                loadRelated(currentProduct.category);
+            } else {
+                document.getElementById('detail-layout').innerHTML = `
+                    <div style="grid-column:1/-1; text-align:center; padding:var(--space-xxl) 0;">
+                        <i class="ph ph-image" style="font-size:3rem; color:var(--border-color); display:block; margin-bottom:1rem;"></i>
+                        <h2>Product not found</h2>
+                        <p style="color:var(--text-secondary); margin:1rem 0 2rem;">Browse our full catalog to find your perfect print.</p>
+                        <a href="products.html" class="btn btn-primary">Browse Products</a>
+                    </div>`;
+            }
+        });
+    </script>
+</body>
+</html>

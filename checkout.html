@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout — Inkspire</title>
+    <meta name="description" content="Enter your delivery address and complete your Inkspire order.">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/checkout.css">
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="logo">Inkspire.</a>
+        <nav class="nav-links">
+            <a href="products.html">Shop Posters</a>
+            <a href="products.html?category=3d-print">3D Prints</a>
+            <a href="upload.html">Upload Custom</a>
+        </nav>
+        <div class="nav-actions">
+            <button id="theme-toggle" class="btn" style="padding: 0.5rem;" aria-label="Toggle Dark Mode">
+                <i class="ph ph-moon"></i>
+            </button>
+            <a href="cart.html" class="cart-icon-wrapper">
+                <i class="ph ph-shopping-cart" style="font-size: 1.5rem;"></i>
+                <span class="cart-badge" id="cart-badge-count">0</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Step Indicator -->
+    <div class="step-indicator">
+        <div class="step active">
+            <div class="step-num">1</div>
+            <span class="step-label">Address</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <span class="step-label">Review</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <span class="step-label">Payment</span>
+        </div>
+    </div>
+
+    <div class="checkout-layout">
+        <!-- Address Form -->
+        <div class="form-section">
+            <h2>Delivery Address</h2>
+            <form id="checkout-form" novalidate>
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="full-name">Full Name *</label>
+                        <input type="text" id="full-name" name="full-name" placeholder="Riya Sharma" autocomplete="name">
+                        <span class="field-error" id="err-name"></span>
+                    </div>
+                    <div class="form-field">
+                        <label for="phone">Phone *</label>
+                        <input type="tel" id="phone" name="phone" placeholder="9876543210" autocomplete="tel">
+                        <span class="field-error" id="err-phone"></span>
+                    </div>
+                    <div class="form-field full-width">
+                        <label for="address">Street Address *</label>
+                        <input type="text" id="address" name="address" placeholder="204 Arthouse Lane, Sector 12" autocomplete="street-address">
+                        <span class="field-error" id="err-address"></span>
+                    </div>
+                    <div class="form-field">
+                        <label for="city">City *</label>
+                        <input type="text" id="city" name="city" placeholder="Mumbai" autocomplete="address-level2">
+                        <span class="field-error" id="err-city"></span>
+                    </div>
+                    <div class="form-field">
+                        <label for="state">State *</label>
+                        <select id="state" name="state" autocomplete="address-level1">
+                            <option value="">Select State</option>
+                            <option>Andhra Pradesh</option><option>Delhi</option>
+                            <option>Gujarat</option><option>Haryana</option>
+                            <option>Karnataka</option><option>Kerala</option>
+                            <option>Madhya Pradesh</option><option>Maharashtra</option>
+                            <option>Punjab</option><option>Rajasthan</option>
+                            <option>Tamil Nadu</option><option>Telangana</option>
+                            <option>Uttar Pradesh</option><option>West Bengal</option>
+                        </select>
+                        <span class="field-error" id="err-state"></span>
+                    </div>
+                    <div class="form-field">
+                        <label for="pincode">Pincode *</label>
+                        <input type="text" id="pincode" name="pincode" placeholder="400001" maxlength="6" autocomplete="postal-code">
+                        <span class="field-error" id="err-pincode"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="continue-btn">
+                    Continue to Payment <i class="ph ph-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Order Summary Sidebar -->
+        <aside class="checkout-summary">
+            <div class="checkout-summary-box">
+                <h3>Order Summary</h3>
+                <div id="checkout-items">
+                    <p style="color:var(--text-secondary); font-size:0.9rem;">Loading cart…</p>
+                </div>
+                <div class="checkout-divider"></div>
+                <div class="checkout-total-line">
+                    <span>Total</span>
+                    <span id="checkout-total">₹0</span>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <footer>
+        <div class="logo">Inkspire. &copy; 2026</div>
+        <div class="footer-links">
+            <a href="#">Instagram</a> | <a href="#">Twitter</a>
+        </div>
+    </footer>
+
+    <script src="js/theme.js"></script>
+    <script src="js/hofs.js"></script>
+    <script src="js/cart.js"></script>
+
+    <script>
+        // Render order summary sidebar
+        function renderSummary() {
+            const cart = getCart();
+            const itemsEl = document.getElementById('checkout-items');
+            const totalEl = document.getElementById('checkout-total');
+            if (!cart.length) {
+                itemsEl.innerHTML = '<p style="color:var(--text-secondary);font-size:0.88rem;">No items in cart</p>';
+                return;
+            }
+            itemsEl.innerHTML = cart.map(item => `
+                <div class="checkout-item-row">
+                    <span class="checkout-item-name">${item.title ? item.title.slice(0, 40) : 'Artwork'} × ${item.quantity}</span>
+                    <span class="checkout-item-price">₹${(item.price * item.quantity).toLocaleString('en-IN')}</span>
+                </div>
+            `).join('');
+            const subtotal = getCartTotal(cart);
+            const shipping = subtotal >= 999 ? 0 : 99;
+            totalEl.textContent = `₹${(subtotal + shipping).toLocaleString('en-IN')}`;
+        }
+
+        // Form validation
+        function validate() {
+            let valid = true;
+
+            const fields = [
+                { id: 'full-name', err: 'err-name', msg: 'Please enter your full name', minLen: 2 },
+                { id: 'phone', err: 'err-phone', msg: 'Please enter a valid 10-digit phone number', pattern: /^\d{10}$/ },
+                { id: 'address', err: 'err-address', msg: 'Please enter your street address', minLen: 5 },
+                { id: 'city', err: 'err-city', msg: 'Please enter your city', minLen: 2 },
+                { id: 'pincode', err: 'err-pincode', msg: 'Pincode must be 6 digits', pattern: /^\d{6}$/ }
+            ];
+
+            fields.forEach(f => {
+                const el = document.getElementById(f.id);
+                const errEl = document.getElementById(f.err);
+                const val = el.value.trim();
+                let ok = true;
+                if (f.pattern && !f.pattern.test(val)) ok = false;
+                if (f.minLen && val.length < f.minLen) ok = false;
+                if (!val) ok = false;
+
+                if (!ok) {
+                    el.classList.add('invalid');
+                    errEl.textContent = f.msg;
+                    valid = false;
+                } else {
+                    el.classList.remove('invalid');
+                    errEl.textContent = '';
+                }
+            });
+
+            // State
+            const stateEl = document.getElementById('state');
+            const stateErr = document.getElementById('err-state');
+            if (!stateEl.value) {
+                stateEl.classList.add('invalid');
+                stateErr.textContent = 'Please select your state';
+                valid = false;
+            } else {
+                stateEl.classList.remove('invalid');
+                stateErr.textContent = '';
+            }
+
+            return valid;
+        }
+
+        document.getElementById('checkout-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (validate()) {
+                // Save address to localStorage for order success page
+                localStorage.setItem('inkspire_address', JSON.stringify({
+                    name: document.getElementById('full-name').value.trim(),
+                    phone: document.getElementById('phone').value.trim(),
+                    address: document.getElementById('address').value.trim(),
+                    city: document.getElementById('city').value.trim(),
+                    state: document.getElementById('state').value,
+                    pincode: document.getElementById('pincode').value.trim()
+                }));
+                window.location.href = 'payment.html';
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', renderSummary);
+    </script>
+</body>
+</html>

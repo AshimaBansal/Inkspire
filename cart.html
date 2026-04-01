@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart — Inkspire</title>
+    <meta name="description" content="Review your selected posters and 3D prints before checkout.">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/cart.css">
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="logo">Inkspire.</a>
+        <nav class="nav-links">
+            <a href="products.html">Shop Posters</a>
+            <a href="products.html?category=3d-print">3D Prints</a>
+            <a href="upload.html">Upload Custom</a>
+        </nav>
+        <div class="nav-actions">
+            <button id="theme-toggle" class="btn" style="padding: 0.5rem;" aria-label="Toggle Dark Mode">
+                <i class="ph ph-moon"></i>
+            </button>
+            <a href="cart.html" class="cart-icon-wrapper">
+                <i class="ph ph-shopping-cart" style="font-size: 1.5rem;"></i>
+                <span class="cart-badge" id="cart-badge-count">0</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="container" style="padding-top: var(--space-xl);">
+        <h1 class="cart-title">Your Cart</h1>
+    </div>
+
+    <div class="cart-layout" id="cart-root">
+        <!-- Rendered by JS -->
+    </div>
+
+    <footer>
+        <div class="logo">Inkspire. &copy; 2026</div>
+        <div class="footer-links">
+            <a href="#">Instagram</a> | <a href="#">Twitter</a>
+        </div>
+    </footer>
+
+    <script src="js/theme.js"></script>
+    <script src="js/hofs.js"></script>
+    <script src="js/cart.js"></script>
+
+    <script>
+        const SHIPPING_THRESHOLD = 999;
+        const SHIPPING_COST = 99;
+
+        function renderCart() {
+            const cart = getCart();
+            const root = document.getElementById('cart-root');
+
+            if (cart.length === 0) {
+                root.innerHTML = `
+                    <div class="cart-empty" style="grid-column:1/-1">
+                        <i class="ph ph-shopping-cart-simple"></i>
+                        <h2>Your cart is empty</h2>
+                        <p>Looks like you haven't added anything yet. Browse our curated collection to get started.</p>
+                        <a href="products.html" class="btn btn-primary">Browse Products</a>
+                    </div>`;
+                return;
+            }
+
+            // Use HOF reduce for subtotal
+            const subtotal = getCartTotal(cart);
+            const shipping = subtotal >= SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
+            const total = subtotal + shipping;
+
+            root.innerHTML = `
+                <div class="cart-items-column">
+                    <div class="cart-items-list">
+                        ${cart.map((item, i) => `
+                            <div class="cart-item" data-index="${i}">
+                                <img class="cart-item-img" src="${item.image}" alt="${item.title}" loading="lazy">
+                                <div class="cart-item-details">
+                                    <div class="cart-item-title">${item.title ? item.title.charAt(0).toUpperCase() + item.title.slice(1) : 'Artwork'}</div>
+                                    <div class="cart-item-meta">Size: ${item.size} &nbsp;·&nbsp; Material: ${item.material}</div>
+                                    <div class="cart-item-meta">by ${item.photographer || 'Unknown Artist'}</div>
+                                    <div class="cart-item-price">₹${(item.price * item.quantity).toLocaleString('en-IN')}</div>
+                                </div>
+                                <div class="cart-item-controls">
+                                    <div class="qty-controls">
+                                        <button class="qty-btn" onclick="updateQuantity(${i}, -1)" aria-label="Decrease">−</button>
+                                        <span class="qty-display">${item.quantity}</span>
+                                        <button class="qty-btn" onclick="updateQuantity(${i}, 1)" aria-label="Increase">+</button>
+                                    </div>
+                                    <button class="remove-btn" onclick="removeFromCart(${i})">
+                                        <i class="ph ph-trash"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <aside class="order-summary">
+                    <h3>Order Summary</h3>
+                    <div class="summary-line">
+                        <span>Subtotal (${cart.reduce((t, i) => t + i.quantity, 0)} items)</span>
+                        <span>₹${subtotal.toLocaleString('en-IN')}</span>
+                    </div>
+                    <div class="summary-line shipping">
+                        <span>Shipping</span>
+                        <span>${shipping === 0 ? '<span class="free-tag">FREE</span>' : '₹' + shipping}</span>
+                    </div>
+                    ${shipping > 0 ? `<p style="font-size:0.78rem; color:var(--accent-gold); margin-bottom:0.5rem;">Add ₹${(SHIPPING_THRESHOLD - subtotal).toLocaleString('en-IN')} more for free shipping</p>` : ''}
+                    <div class="summary-divider"></div>
+                    <div class="summary-line total">
+                        <span>Total</span>
+                        <span>₹${total.toLocaleString('en-IN')}</span>
+                    </div>
+                    <a href="checkout.html" class="checkout-btn">
+                        Proceed to Checkout <i class="ph ph-arrow-right"></i>
+                    </a>
+                    <a href="products.html" class="continue-shopping">← Continue Shopping</a>
+                </aside>
+            `;
+        }
+
+        document.addEventListener('DOMContentLoaded', renderCart);
+    </script>
+</body>
+</html>

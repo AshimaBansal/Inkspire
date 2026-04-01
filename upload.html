@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Custom Design — Inkspire</title>
+    <meta name="description" content="Upload your own artwork to print as a poster or 3D model on Inkspire.">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/checkout.css">
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="logo">Inkspire.</a>
+        <nav class="nav-links">
+            <a href="products.html">Shop Posters</a>
+            <a href="products.html?category=3d-print">3D Prints</a>
+            <a href="upload.html">Upload Custom</a>
+        </nav>
+        <div class="nav-actions">
+            <button id="theme-toggle" class="btn" style="padding: 0.5rem;" aria-label="Toggle Dark Mode">
+                <i class="ph ph-moon"></i>
+            </button>
+            <a href="cart.html" class="cart-icon-wrapper">
+                <i class="ph ph-shopping-cart" style="font-size: 1.5rem;"></i>
+                <span class="cart-badge" id="cart-badge-count">0</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="upload-container">
+        <h1>Upload Your Design</h1>
+        <p>Transform your artwork, photo, or 3D model into a premium print. We accept JPG, PNG, PDF, and STL files.</p>
+
+        <div class="upload-box">
+            <!-- Drop Zone -->
+            <div class="dropzone" id="dropzone">
+                <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.pdf,.stl" aria-label="Upload your design file">
+                <i class="ph ph-upload-simple"></i>
+                <h3>Drag & Drop your file here</h3>
+                <p>or <span class="browse-link">browse to upload</span></p>
+                <p style="margin-top:0.5rem; font-size:0.78rem; color:var(--text-secondary);">Supported: JPG, PNG, PDF, STL &nbsp;·&nbsp; Max 50MB</p>
+            </div>
+
+            <!-- File Preview -->
+            <div class="file-preview" id="file-preview">
+                <img class="preview-img" id="preview-img" src="" alt="Preview">
+                <div class="preview-info">
+                    <div class="preview-name" id="preview-name"></div>
+                    <div class="preview-size" id="preview-size"></div>
+                    <div style="margin-top:0.5rem; font-size:0.82rem; color:#4caf50;">
+                        <i class="ph ph-check-circle"></i> File ready to print
+                    </div>
+                </div>
+                <button class="remove-file-btn" id="remove-file-btn" aria-label="Remove file">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+
+            <!-- Options -->
+            <div class="upload-options" id="upload-options" style="display:none;">
+                <div class="option-group">
+                    <label for="product-type">Product Type</label>
+                    <select id="product-type">
+                        <option value="poster">Poster Print</option>
+                        <option value="3d-print">3D Print</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <label for="upload-size">Size</label>
+                    <select id="upload-size">
+                        <option value="A4">A4 (21 × 29.7 cm)</option>
+                        <option value="A3">A3 (29.7 × 42 cm)</option>
+                        <option value="A2">A2 (42 × 59.4 cm)</option>
+                        <option value="50x70">50 × 70 cm</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <label for="upload-material">Material</label>
+                    <select id="upload-material">
+                        <option>Matte</option>
+                        <option>Glossy</option>
+                        <option>Canvas</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <label for="upload-qty">Quantity</label>
+                    <select id="upload-qty">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Price Preview -->
+            <div id="upload-price-preview" style="display:none; margin-top:var(--space-lg); padding:var(--space-md); background:var(--bg-primary); border:1px solid var(--border-color);">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <div style="font-size:0.78rem; text-transform:uppercase; letter-spacing:2px; color:var(--text-secondary);">Estimated Price</div>
+                        <div id="upload-price-val" style="font-family:var(--font-heading); font-size:1.6rem; margin-top:0.25rem;">₹999</div>
+                    </div>
+                    <button class="btn btn-primary" id="upload-add-cart-btn">
+                        <i class="ph ph-shopping-cart"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="steps" style="gap:var(--space-lg); text-align:center;">
+            <div>
+                <div style="font-size:2rem; color:var(--accent-gold); margin-bottom:var(--space-xs);"><i class="ph ph-paint-brush"></i></div>
+                <h3 style="font-size:1rem; margin-bottom:0.3rem;">Professional Quality</h3>
+                <p style="font-size:0.85rem; color:var(--text-secondary);">Giclée printing on acid-free archival paper</p>
+            </div>
+            <div>
+                <div style="font-size:2rem; color:var(--accent-gold); margin-bottom:var(--space-xs);"><i class="ph ph-shield-check"></i></div>
+                <h3 style="font-size:1rem; margin-bottom:0.3rem;">Your Art, Your Rights</h3>
+                <p style="font-size:0.85rem; color:var(--text-secondary);">We never use or sell your uploaded files</p>
+            </div>
+            <div>
+                <div style="font-size:2rem; color:var(--accent-gold); margin-bottom:var(--space-xs);"><i class="ph ph-package"></i></div>
+                <h3 style="font-size:1rem; margin-bottom:0.3rem;">Secure Packaging</h3>
+                <p style="font-size:0.85rem; color:var(--text-secondary);">Rigid-backed or tube-rolled for safe delivery</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="logo">Inkspire. &copy; 2026</div>
+        <div class="footer-links">
+            <a href="#">Instagram</a> | <a href="#">Twitter</a>
+        </div>
+    </footer>
+
+    <script src="js/theme.js"></script>
+    <script src="js/hofs.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/upload.js"></script>
+</body>
+</html>

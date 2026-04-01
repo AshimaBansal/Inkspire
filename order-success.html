@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed — Inkspire</title>
+    <meta name="description" content="Your Inkspire order has been placed successfully.">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/checkout.css">
+    <canvas id="confetti-canvas"></canvas>
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="logo">Inkspire.</a>
+        <nav class="nav-links">
+            <a href="products.html">Shop Posters</a>
+            <a href="products.html?category=3d-print">3D Prints</a>
+            <a href="upload.html">Upload Custom</a>
+        </nav>
+        <div class="nav-actions">
+            <button id="theme-toggle" class="btn" style="padding: 0.5rem;" aria-label="Toggle Dark Mode">
+                <i class="ph ph-moon"></i>
+            </button>
+            <a href="cart.html" class="cart-icon-wrapper">
+                <i class="ph ph-shopping-cart" style="font-size: 1.5rem;"></i>
+                <span class="cart-badge" id="cart-badge-count">0</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="success-container">
+        <div class="success-icon">
+            <i class="ph ph-check"></i>
+        </div>
+
+        <h1>Order Placed!</h1>
+        <p>Thank you for your purchase. Your prints are being prepared with care.</p>
+
+        <div class="order-meta" id="order-meta">
+           
+        </div>
+
+        <div class="ordered-items" id="ordered-items">
+          
+        </div>
+
+        <div class="success-actions">
+            <a href="index.html" class="btn btn-primary">Continue Shopping</a>
+            <a href="products.html" class="btn btn-outline">Explore More Art</a>
+        </div>
+    </div>
+
+    <footer>
+        <div class="logo">Inkspire. &copy; 2026</div>
+        <div class="footer-links">
+            <a href="#">Instagram</a> | <a href="#">Twitter</a>
+        </div>
+    </footer>
+
+    <script src="js/theme.js"></script>
+    <script src="js/hofs.js"></script>
+    <script src="js/cart.js"></script>
+
+    <script>
+        
+        function generateOrderId() {
+            return 'INK-' + Math.random().toString(36).substr(2, 4).toUpperCase() + '-' + Date.now().toString().slice(-4);
+        }
+
+       
+        function getDeliveryDate() {
+            const d = new Date();
+            d.setDate(d.getDate() + 5);
+            return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const orderId = generateOrderId();
+            const deliveryDate = getDeliveryDate();
+
+            // Order meta
+            document.getElementById('order-meta').innerHTML = `
+                <div class="order-meta-item">
+                    <label>Order ID</label>
+                    <span>${orderId}</span>
+                </div>
+                <div class="order-meta-item">
+                    <label>Estimated Delivery</label>
+                    <span>${deliveryDate}</span>
+                </div>
+            `;
+
+           
+            const addr = JSON.parse(localStorage.getItem('inkspire_address') || '{}');
+
+            if (addr.name) {
+                const metaEl = document.getElementById('order-meta');
+                metaEl.innerHTML += `
+                    <div class="order-meta-item">
+                        <label>Delivering To</label>
+                        <span>${addr.name}</span>
+                    </div>
+                    <div class="order-meta-item">
+                        <label>City</label>
+                        <span>${addr.city || '—'}, ${addr.state || ''}</span>
+                    </div>
+                `;
+            }
+
+            document.getElementById('ordered-items').innerHTML = `
+                <h3>What's next?</h3>
+                <div class="ordered-item-row">
+                    <span><i class="ph ph-paint-brush" style="color:var(--accent-gold);margin-right:0.5rem;"></i>Your prints are being quality-checked</span>
+                    <span>Step 1</span>
+                </div>
+                <div class="ordered-item-row">
+                    <span><i class="ph ph-package" style="color:var(--accent-gold);margin-right:0.5rem;"></i>Carefully packed in eco materials</span>
+                    <span>Step 2</span>
+                </div>
+                <div class="ordered-item-row">
+                    <span><i class="ph ph-truck" style="color:var(--accent-gold);margin-right:0.5rem;"></i>Shipped to your door by ${deliveryDate}</span>
+                    <span>Step 3</span>
+                </div>
+            `;
+
+            
+            localStorage.removeItem('inkspire_address');
+
+      
+            launchConfetti();
+        });
+
+      
+        function launchConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const COLORS = ['#C8A96E', '#E8E4DE', '#1A1A1A', '#FFFFFF', '#c9a227', '#8B6914'];
+            const pieces = Array.from({ length: 120 }, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height - canvas.height,
+                w: Math.random() * 12 + 4,
+                h: Math.random() * 6 + 3,
+                color: COLORS[Math.floor(Math.random() * COLORS.length)],
+                speed: Math.random() * 3 + 2,
+                angle: Math.random() * Math.PI * 2,
+                spin: (Math.random() - 0.5) * 0.2,
+                drift: (Math.random() - 0.5) * 1.5
+            }));
+
+            let frames = 0;
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pieces.forEach(p => {
+                    p.y += p.speed;
+                    p.x += p.drift;
+                    p.angle += p.spin;
+                    if (p.y > canvas.height + 20) {
+                        p.y = -20;
+                        p.x = Math.random() * canvas.width;
+                    }
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.angle);
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = 0.85;
+                    ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                    ctx.restore();
+                });
+                frames++;
+                if (frames < 180) requestAnimationFrame(draw);
+                else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            draw();
+        }
+    </script>
+</body>
+</html>
